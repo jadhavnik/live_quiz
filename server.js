@@ -40,9 +40,8 @@ hbs.registerHelper('showtext',(text)=>{
   return text.toUpperCase();
 });
 
-app.get('/',(req,res) => {
+app.get('/home',(req,res) => {
 // res.send("<h1>hello Express</h1>");
-
 res.send({
   name:'nikhil',
   likes:[
@@ -50,6 +49,7 @@ res.send({
     'carr'
   ]
 });
+
 });
 
 
@@ -67,7 +67,7 @@ res.render('about',{
 });
 });
 
-app.get('/home',(req,res)=>{
+app.get('/',(req,res)=>{
 res.render('home',{
   pageTitle:'home page',
   welcomeMsg:'hi'
