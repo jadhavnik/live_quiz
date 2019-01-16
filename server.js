@@ -4,6 +4,9 @@ const fs=require('fs');
 
 const port =process.env.PORT || 3000 ;
 
+//  const {PORT = 3000} = process.env; //ES6
+
+
 var app= express();
 
 hbs.registerPartials(__dirname +'/views/partials');
