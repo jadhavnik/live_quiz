@@ -12,6 +12,7 @@ if(err){
 return console.log('unable to connect to mo');
 }
 
+
 // db.collection('Todos').insertOne({
 // _id:new ObjectID(),
 //   text:'something todo',
