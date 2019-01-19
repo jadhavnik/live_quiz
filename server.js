@@ -35,9 +35,26 @@ var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 var {Question,Answer} = require('./models/question_answer');
 
+const {generateMessage} = require('./utils/message');
+const {isRealString,isMatchPassword} = require('./utils/validation');
+
 
 io.on('connection',(socket)=>{
 console.log('new user connected');
+
+socket.on('join', (params, callback) => {
+    if (!isRealString(params.name) || !isRealString(params.room)) {
+      return callback('Name and room name are required.');
+    }
+if(!isMatchPassword(params.room))
+{
+  return callback('Please enter correct passowrd');
+}
+    socket.join(params.room);
+    callback();
+    });
+
+
 socket.on('disconnect',()=>{
   console.log('User was disconnected');
 });
@@ -114,14 +131,14 @@ res.render('about',{
 });
 });
 
-app.get('/',(req,res)=>{
-res.render('home',{
-  pageTitle:'home page',
-  welcomeMsg:'hi'
-  //currentYear:new Date().getFullYear()
-
-});
-});
+// app.get('/',(req,res)=>{
+// res.render('home',{
+//   pageTitle:'home page',
+//   welcomeMsg:'hi'
+//   //currentYear:new Date().getFullYear()
+//
+// });
+// });
 
 app.get('/index', (req, res) =>{
   res.render('admin_ques');
@@ -151,6 +168,14 @@ answer: req.body.answer,
 
   answer.save();
   res.redirect('index');
+});
+
+app.get('/get_question_data', (req, res) => {
+  Question.find().then((todos) => {
+    res.send({todos});
+  }, (e) => {
+    res.status(400).send(e);
+  });
 });
 
 
