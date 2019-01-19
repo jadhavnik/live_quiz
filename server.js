@@ -21,7 +21,7 @@ const publicPath = path.join(__dirname, './public');
 app.use(express.static(publicPath));
 
 // hbs.registerPartials(__dirname +'/views/partials');
-app.engine('hbs', hbs({extname: 'hbs', defaultLayout: 'layout', layoutsDir: __dirname + '/views/layouts/',partialsDir: __dirname + '/views/partials/'}));
+app.engine('hbs', hbs({extname: 'hbs',helpers: require("./public/js/helpers.js").helpers,defaultLayout: 'layout', layoutsDir: __dirname + '/views/layouts/',partialsDir: __dirname + '/views/partials/'}));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine','hbs');
 
