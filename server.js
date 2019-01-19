@@ -15,6 +15,7 @@ var server =http.createServer(app);
 var io=socketIO(server);
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 //  const {PORT = 3000} = process.env; //ES6
 
 const publicPath = path.join(__dirname, './public');
@@ -32,6 +33,7 @@ const {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
+var {Question,Answer} = require('./models/question_answer');
 
 
 io.on('connection',(socket)=>{
@@ -42,7 +44,20 @@ socket.on('disconnect',()=>{
 
 });
 
+// app.use((req,res,next)=>{
+// res.render('maintenance');
+// });
 
+app.use(express.static(__dirname+'/public'));
+
+// hbs.registerHelper('getCurrentYear',()=>{
+//
+//   return new Date().getFullYear()
+// });
+
+// hbs.registerHelper('showtext',(text)=>{
+//   return text.toUpperCase();
+// });
 
 app.post('/todos', (req, res) => {
   var todo = new Todo({
@@ -70,25 +85,6 @@ if(err){
 });
 
 next();
-});
-
-// app.use((req,res,next)=>{
-// res.render('maintenance');
-// });
-
-app.use(express.static(__dirname+'/public'));
-
-// hbs.registerHelper('getCurrentYear',()=>{
-//
-//   return new Date().getFullYear()
-// });
-
-// hbs.registerHelper('showtext',(text)=>{
-//   return text.toUpperCase();
-// });
-
-app.get('/index', (req, res) =>{
-  res.render('admin_ques');
 });
 
 app.get('/home',(req,res) => {
@@ -126,6 +122,37 @@ res.render('home',{
 
 });
 });
+
+app.get('/index', (req, res) =>{
+  res.render('admin_ques');
+});
+
+app.post('/insert_ques', (req, res) =>{
+
+  var question = new Question({
+    quest_no:req.body.quest_no,
+    ques: req.body.question,
+opt_a: req.body.option_a,
+opt_b: req.body.option_b,
+opt_c: req.body.option_c,
+opt_d: req.body.option_d
+  });
+
+  question.save();
+  res.redirect('index');
+});
+
+app.post('/insert_ans', (req, res) =>{
+
+  var answer = new Answer({
+    question: req.body.question,
+answer: req.body.answer,
+  });
+
+  answer.save();
+  res.redirect('index');
+});
+
 
 app.get('/first',(req, res)=>{
 
