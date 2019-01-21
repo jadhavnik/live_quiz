@@ -30,33 +30,48 @@ app.set('view engine','hbs');
 
 const {ObjectID} = require('mongodb');
 
-var {mongoose} = require('./db/mongoose');
-var {Todo} = require('./models/todo');
-var {User} = require('./models/user');
-var {Question,Answer} = require('./models/question_answer');
+const {mongoose} = require('./db/mongoose');
+const {Todo} = require('./models/todo');
+const {Users} = require('./utils/users');
+const {Question,Answer} = require('./models/question_answer');
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage,sendPageNo} = require('./utils/message');
 const {isRealString,isMatchPassword} = require('./utils/validation');
 
+var users = new Users();
 
 io.on('connection',(socket)=>{
-console.log('new user connected');
+
 
 socket.on('join', (params, callback) => {
     if (!isRealString(params.name) || !isRealString(params.room)) {
-      return callback('Name and room name are required.');
+      return callback('Name and password name are required.');
     }
 if(!isMatchPassword(params.room))
 {
   return callback('Please enter correct passowrd');
 }
     socket.join(params.room);
+    users.removeUser(socket.id);
+    users.addUser(socket.id, params.name, params.room);
+console.log(`${ params.name} connected`);
+
+io.to(params.room).emit('nextQuestion',sendPageNo('first'));
+    io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+    socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
     callback();
     });
 
 
 socket.on('disconnect',()=>{
   console.log('User was disconnected');
+  var user = users.removeUser(socket.id);
+
+  if (user) {
+    io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+    io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
+  }
 });
 
 });

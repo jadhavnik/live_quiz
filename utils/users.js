@@ -27,7 +27,7 @@ class Users {
 
     }
 
-    return user;
+    return user;   //sending single user
   }
 
   getUser (id) {

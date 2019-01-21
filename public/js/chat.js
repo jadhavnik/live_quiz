@@ -1,5 +1,7 @@
 var socket = io();
 
+
+
 // function scrollToBottom () {
 //   // Selectors
 //   var messages = jQuery('#messages');
@@ -33,25 +35,57 @@ socket.on('disconnect', function () {
   console.log('Disconnected from server');
 });
 
-// socket.on('updateUserList', function (users) {
-//   var ol = jQuery('<ol></ol>');
-//
-//   users.forEach(function (user) {
-//     ol.append(jQuery('<li></li>').text(user));
-//   });
-//
-//   jQuery('#users').html(ol);
-// });
-//
-// socket.on('getUserCount', function (user_count) {
-//   var pp = jQuery('<p></p>').text("Total Users:"+user_count);
-//
-//   // users.forEach(function (user) {
-//   //   ol.append(jQuery('<li></li>').text(user));
-//   // });
-//
-//   jQuery('#count_users').html(pp);
-// });
+socket.on('nextQuestion', function (data) {
+
+
+countdown(data);
+
+
+var seconds = 3;
+
+function countdown(data) {
+  console.log(data.page_no);
+    seconds = seconds - 1;
+    if (seconds < 0) {
+        // Chnage your redirection link here
+          window.location = "/" + data.page_no;
+    } else {
+        // Update remaining seconds
+        // document.getElementById("countdown").innerHTML = seconds;
+        // Count down using javascript
+        window.setTimeout("countdown()", 1000);
+    }
+}
+
+});
+
+
+
+// Run countdown function
+
+
+
+
+
+socket.on('updateUserList', function (users) {
+  var ol = jQuery('<ol></ol>');
+
+  users.forEach(function (user) {
+    ol.append(jQuery('<li></li>').text(user));
+  });
+
+  jQuery('#users').html(ol);
+});
+
+socket.on('getUserCount', function (user_count) {
+  var pp = jQuery('<p></p>').text("Total Users:"+user_count);
+
+  // users.forEach(function (user) {
+  //   ol.append(jQuery('<li></li>').text(user));
+  // });
+
+  jQuery('#count_users').html(pp);
+});
 
 
 // socket.on('newMessage', function (message) {
@@ -111,3 +145,36 @@ socket.on('disconnect', function () {
 //     alert('Unable to fetch location.');
 //   });
 // });
+
+
+// function bar(data, timeout = 10000) {
+//     return new Promise((resolve, reject) => {
+//         let timer;
+//
+//         socket.emit('message', data);
+//
+//         function responseHandler(message) {
+//             // resolve promise with the value we got
+//             resolve(message);
+//             clearTimeout(timer);
+//         }
+//
+//         socket.once('msg', responseHandler);
+//
+//         // set timeout so if a response is not received within a
+//         // reasonable amount of time, the promise will reject
+//         timer = setTimeout(() => {
+//             reject(new Error("timeout waiting for msg"));
+//             socket.removeListener('msg', responseHandler);
+//         }, timeout);
+//
+//     });
+// }
+//
+// bar().then(message => {
+//    // you can use message here and only in here
+// });
+
+
+// https://stackoverflow.com/questions/51488022/how-to-make-javascript-execution-wait-for-socket-on-function-response#
+// https://stackoverflow.com/questions/15515862/nodejsexpress-with-socketio

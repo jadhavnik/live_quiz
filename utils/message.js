@@ -8,6 +8,10 @@ var generateMessage = (from, text) => {
   };
 };
 
+var sendPageNo = (page_no) => {
+  return { page_no };
+};
+
 // var generateLocationMessage = (from, latitude, longitude) => {
 //   return {
 //     from,
@@ -16,4 +20,8 @@ var generateMessage = (from, text) => {
 //   };
 // };
 
-module.exports = {generateMessage};
+module.exports = {
+  generateMessage,
+  sendPageNo
+
+};
