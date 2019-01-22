@@ -36,29 +36,29 @@ socket.on('disconnect', function () {
 });
 
 socket.on('nextQuestion', function (data) {
-
-
 countdown(data);
+});
 
 
-var seconds = 3;
-
+var seconds = 1;
+var data_a;
 function countdown(data) {
-  console.log(data.page_no);
+
+  console.log(data);
+
+  var data_a= data;
     seconds = seconds - 1;
     if (seconds < 0) {
+      // window.location.href=data;
         // Chnage your redirection link here
-          window.location = "/" + data.page_no;
+          // window.location.href = "/" + data;
     } else {
         // Update remaining seconds
         // document.getElementById("countdown").innerHTML = seconds;
         // Count down using javascript
-        window.setTimeout("countdown()", 1000);
+      setTimeout(countdown, 1000);
     }
 }
-
-});
-
 
 
 // Run countdown function

@@ -1,14 +1,3 @@
-<!DOCTYPE html>
-
-<html>
-
-<head>
-  <meta charset="utf-8">
-  <title>Chat | ChatApp</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <link rel="stylesheet" href="/css/styles.css">
-</head>
-
 <body class="chat">
 
   <div class="chat__sidebar">
@@ -20,7 +9,18 @@
 
    <div class="chat__main">
     <!-- <ol id="messages" class="chat__messages"></ol> -->
-<p></p>
+<p>
+  {{# each items }}
+
+    <div>{{ this.quest_no }}.{{ this.ques }} <br>
+    <input type="radio" name="options" value="{{ this.opt_a }}"> {{ this.opt_a }}<br>
+      <input type="radio" name="options" value="{{ this.opt_b }}">{{ this.opt_b }}<br>
+      <input type="radio" name="options" value="{{ this.opt_c }}">{{ this.opt_c }}<br>
+<input type="radio" name="options" value="{{ this.opt_d }}">{{ this.opt_d }}<br>
+</div>
+  {{/each}}
+
+</p>
 
 </div>
     <!-- <div class="chat__footer">
@@ -65,5 +65,3 @@
   <script src="/js/libs/deparam.js"></script>
   <script src="/js/chat.js"></script>
 </body>
-
-</html>

@@ -56,6 +56,7 @@ if(!isMatchPassword(params.room))
     users.addUser(socket.id, params.name, params.room);
 console.log(`${ params.name} connected`);
 
+io.to(params.room).emit('getQuestion',);
 io.to(params.room).emit('nextQuestion',sendPageNo('first'));
     io.to(params.room).emit('updateUserList', users.getUserList(params.room));
     socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
@@ -76,6 +77,7 @@ socket.on('disconnect',()=>{
 
 });
 
+
 // app.use((req,res,next)=>{
 // res.render('maintenance');
 // });
@@ -90,6 +92,18 @@ app.use(express.static(__dirname+'/public'));
 // hbs.registerHelper('showtext',(text)=>{
 //   return text.toUpperCase();
 // });
+
+
+app.get('/get_question_data', (req, res) => {
+
+  var query={ quest_no: 1 };
+
+  Question.find(query)
+      .then (function(doc){
+          res.render('/',{items:doc});
+        });
+
+});
 
 app.post('/todos', (req, res) => {
   var todo = new Todo({
@@ -120,31 +134,23 @@ next();
 });
 
 app.get('/home',(req,res) => {
-// res.send("<h1>hello Express</h1>");
-res.send({
-  name:'nikhil',
-  likes:[
-    'paint',
-    'carr'
-  ]
-});
-
+res.render('home');
 });
 
 
-app.get('/bad',(req,res)=>{
+// app.get('/bad',(req,res)=>{
+//
+//   res.send({
+// errMsg:'this is err'
+//   });
+// });
 
-  res.send({
-errMsg:'this is err'
-  });
-});
-
-app.get('/about',(req,res)=>{
-res.render('about',{
-  pageTitle:'about page'
-  //currentYear:new Date().getFullYear()
-});
-});
+// app.get('/about',(req,res)=>{
+// res.render('about',{
+//   pageTitle:'about page'
+//   //currentYear:new Date().getFullYear()
+// });
+// });
 
 // app.get('/',(req,res)=>{
 // res.render('home',{
@@ -157,6 +163,18 @@ res.render('about',{
 
 app.get('/index', (req, res) =>{
   res.render('admin_ques');
+});
+
+app.get('/quiz', (req, res) =>{
+
+  var query={ quest_no: 1 };
+
+  Question.find(query)
+      .then (function(doc){
+          res.render('quiz',{items:doc});
+        });
+
+  // res.render('/');
 });
 
 app.post('/insert_ques', (req, res) =>{
@@ -185,13 +203,7 @@ answer: req.body.answer,
   res.redirect('index');
 });
 
-app.get('/get_question_data', (req, res) => {
-  Question.find().then((todos) => {
-    res.send({todos});
-  }, (e) => {
-    res.status(400).send(e);
-  });
-});
+
 
 
 app.get('/first',(req, res)=>{
