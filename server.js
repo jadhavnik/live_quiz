@@ -65,6 +65,66 @@ io.to(params.room).emit('nextQuestion',sendPageNo('first'));
     });
 
 
+socket.on('message', function(message, ackCallback) {
+           console.log("server received message", message);
+           var result={};
+           var check;
+           var question_to_send;
+           question_to_send=1;
+          var query={ question: 1 };
+          Answer.find(query).then (function(doc){
+
+            console.log("answer :",doc[0].answer);
+            console.log("message :",message);
+            check = doc[0].answer === message ? true : false;
+            console.log(check);
+setTimeout(()=>{
+                  if(message != null){
+
+                    if(doc[0].answer == message)
+                         {
+
+                          // Answer.updateOne({question: 1}, { $inc: { count_ans: 1 } }, {upsert: true}, function(err){
+                          // console.log(err);
+                          // });
+
+
+                          // Answer.findOneAndUpdate({question: 1}, {$inc: { count_ans: 1 }}, {new: true}, (err, man) => {
+                          //     if (err) {
+                          //         console.log("Something wrong when updating data!");
+                          //     }
+                          //     result.count_answer=man.count_ans;
+                          //     console.log(man.count_ans);
+                          // });
+
+          var get_user_data = setAnswer(id,1,"yes");
+result.count_ans =get_user_data.answer;
+                            result.right_answer = "Your answr is right";
+                           console.log("server sending back result : ", result);
+
+                         }
+                         else {
+
+                           var get_user_data = setAnswer(id,1,"no");
+                 result.count_ans =;
+                            result.right_answer = "Your answer is wrong";
+                           console.log("server sending back result : ", result);
+
+                         }
+                  }
+
+ackCallback(result);
+
+}, 2000);
+
+ });
+
+
+
+
+
+       });
+
 socket.on('disconnect',()=>{
   console.log('User was disconnected');
   var user = users.removeUser(socket.id);
@@ -196,7 +256,7 @@ app.post('/insert_ans', (req, res) =>{
 
   var answer = new Answer({
     question: req.body.question,
-answer: req.body.answer,
+answer: req.body.answer
   });
 
   answer.save();

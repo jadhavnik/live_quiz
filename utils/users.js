@@ -13,8 +13,8 @@ class Users {
   constructor () {
     this.users = [];
   }
-  addUser (id, name, room) {
-    var user = {id, name, room};
+  addUser (id, name, room,question,answer) {
+    var user = {id, name, room,question,answer};
     this.users.push(user);
     return user;
   }
@@ -46,6 +46,23 @@ class Users {
 
     return namesArray.length;
   }
+
+setAnswer(id,question,answer)
+{
+  var user = this.getUser(id);
+  user.question = question;
+  user.answer=answer;
+return user;
+}
+
+getAnswer(room)
+{
+  var user = this.getUser(id);
+  user.question = question;
+  user.answer=answer;
+return user;
+}
+
 
 }
 

@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-
+mongoose.set('useFindAndModify', false);
 var Question = mongoose.model('Question', {
    quest_no:{
      type: Number,
@@ -35,6 +35,10 @@ var Answer = mongoose.model('Answer', {
   answer: {
     type: String,
       required: true,
+  },
+  count_ans:{
+    type: Number,
+    default:0
   }
 });
 

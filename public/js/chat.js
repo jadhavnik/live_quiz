@@ -40,30 +40,60 @@ countdown(data);
 });
 
 
-var seconds = 1;
-var data_a;
+var seconds = 10;
+// var data_a;
 function countdown(data) {
 
   console.log(data);
 
-  var data_a= data;
+  // var data_a= data;
     seconds = seconds - 1;
     if (seconds < 0) {
       // window.location.href=data;
         // Chnage your redirection link here
-          // window.location.href = "/" + data;
+           // window.location.href = "/" + data;
     } else {
         // Update remaining seconds
-        // document.getElementById("countdown").innerHTML = seconds;
+         document.getElementById("countdown").innerHTML = seconds;
         // Count down using javascript
       setTimeout(countdown, 1000);
     }
 }
 
 
-// Run countdown function
 
+function bar() {
+    return new Promise((resolve, reject) => {
 
+        var rate_value;
+        if (document.getElementById('a').checked) {
+          rate_value = document.getElementById('a').value;
+        }else if(document.getElementById('b').checked)
+        {
+            rate_value = document.getElementById('b').value;
+        }else if(document.getElementById('c').checked)
+        {
+            rate_value = document.getElementById('c').value;
+        }else if(document.getElementById('d').checked)
+        {
+            rate_value = document.getElementById('d').value;
+        }
+// console.log(rate_value);
+  console.log("client sending message",rate_value);
+        socket.emit('message', rate_value, function(response) {
+jQuery('#people_count').append(response.count_answer);
+          jQuery('#res').append(response.right_answer);
+           console.log("client got ack response", response);
+              setTimeout(() => resolve(response),11000);
+            // resolve(response);
+        });
+    });
+}
+
+bar().then(message => {
+   // you can use message here and only in here
+   console.log("response from bar(): ", message);
+});
 
 
 

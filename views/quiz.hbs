@@ -1,5 +1,5 @@
-<body class="chat">
-
+<body class="chat" onload="setTimeout(bar, 10000);">
+<!-- <body class="chat"> -->
   <div class="chat__sidebar">
     <h3>People</h3>
 
@@ -13,14 +13,17 @@
   {{# each items }}
 
     <div>{{ this.quest_no }}.{{ this.ques }} <br>
-    <input type="radio" name="options" value="{{ this.opt_a }}"> {{ this.opt_a }}<br>
-      <input type="radio" name="options" value="{{ this.opt_b }}">{{ this.opt_b }}<br>
-      <input type="radio" name="options" value="{{ this.opt_c }}">{{ this.opt_c }}<br>
-<input type="radio" name="options" value="{{ this.opt_d }}">{{ this.opt_d }}<br>
+    <input type="radio" name="options" id="a" value="a"> {{ this.opt_a }}<br>
+      <input type="radio" name="options" id="b" value="b">{{ this.opt_b }}<br>
+      <input type="radio" name="options" id="c" value="c">{{ this.opt_c }}<br>
+<input type="radio" name="options" id="d" value="d">{{ this.opt_d }}<br>
 </div>
   {{/each}}
-
+<!-- <button id="send-location" onclick="bar()">Send location</button> -->
 </p>
+Redirecting to duckdev.com after <span id="countdown">10</span> seconds
+<div id="res"></div>
+<div id="people_count"></div>
 
 </div>
     <!-- <div class="chat__footer">
