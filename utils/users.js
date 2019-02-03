@@ -4,6 +4,7 @@
   room: 'The Office Fans'
 }]
 
+const fs =require('fs');
 // addUser(id, name, room)
 // removeUser(id)
 // getUser(id)
@@ -15,7 +16,10 @@ class Users {
   }
   addUser (id, name, room,question,answer) {
     var user = {id, name, room,question,answer};
+// var userString =fs.readFileSync('notes-date.json');
+// this.users=JSON.parse(userString);
     this.users.push(user);
+// fs.writeFileSync('notes-date.json',JSON.stringify(this.users));
     return user;
   }
   removeUser (id) {
@@ -50,18 +54,30 @@ class Users {
 setAnswer(id,question,answer)
 {
   var user = this.getUser(id);
+this.removeUser(id);
   user.question = question;
   user.answer=answer;
+  // var userString =fs.readFileSync('notes-date.json');
+  // this.users=JSON.parse(userString);
+    this.users.push(user);
+fs.writeFileSync('notes-date.json',JSON.stringify(this.users));
 return user;
 }
 
-getAnswer(room)
+getLiveCount(question)
 {
-  var user = this.getUser(id);
-  user.question = question;
-  user.answer=answer;
-return user;
+  var users = this.users.filter((user) => (user.question === question && user.answer === "yes" ));
+  var namesArray = users.map((user) => user.name);
+
+  return namesArray.length;
 }
+// getAnswer(room)
+// {
+//   var user = this.getUser(id);
+//   user.question = question;
+//   user.answer=answer;
+// return user;
+// }
 
 
 }

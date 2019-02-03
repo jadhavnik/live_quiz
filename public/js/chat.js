@@ -35,16 +35,16 @@ socket.on('disconnect', function () {
   console.log('Disconnected from server');
 });
 
-socket.on('nextQuestion', function (data) {
-countdown(data);
-});
+// socket.on('nextQuestion', function (data) {
+// countdown(data);
+// });
 
 
 var seconds = 10;
 // var data_a;
-function countdown(data) {
+function countdown() {
 
-  console.log(data);
+  // console.log(data);
 
   // var data_a= data;
     seconds = seconds - 1;

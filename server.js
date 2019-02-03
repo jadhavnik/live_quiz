@@ -70,6 +70,7 @@ socket.on('message', function(message, ackCallback) {
            var result={};
            var check;
            var question_to_send;
+ var get_user_data={};
            question_to_send=1;
           var query={ question: 1 };
           Answer.find(query).then (function(doc){
@@ -84,9 +85,9 @@ setTimeout(()=>{
                     if(doc[0].answer == message)
                          {
 
-                          // Answer.updateOne({question: 1}, { $inc: { count_ans: 1 } }, {upsert: true}, function(err){
-                          // console.log(err);
-                          // });
+                          Answer.updateOne({question: 1}, { $inc: { count_ans: 1 } }, {upsert: true}, function(err){
+                          console.log(err);
+                          });
 
 
                           // Answer.findOneAndUpdate({question: 1}, {$inc: { count_ans: 1 }}, {new: true}, (err, man) => {
@@ -97,16 +98,17 @@ setTimeout(()=>{
                           //     console.log(man.count_ans);
                           // });
 
-          var get_user_data = setAnswer(id,1,"yes");
-result.count_ans =get_user_data.answer;
+         get_user_data = users.setAnswer(socket.id,1,"yes");
+         console.log(get_user_data.answer);
+ result.count_answer =users.getLiveCount(1);
                             result.right_answer = "Your answr is right";
                            console.log("server sending back result : ", result);
 
                          }
                          else {
 
-                           var get_user_data = setAnswer(id,1,"no");
-                 result.count_ans =;
+                           // var get_user_data = users.setAnswer(id,1,"no");
+                 // result.count_ans =0;
                             result.right_answer = "Your answer is wrong";
                            console.log("server sending back result : ", result);
 
