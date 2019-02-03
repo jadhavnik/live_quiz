@@ -56,7 +56,7 @@ if(!isMatchPassword(params.room))
     users.addUser(socket.id, params.name, params.room);
 console.log(`${ params.name} connected`);
 
-io.to(params.room).emit('getQuestion',);
+// io.to(params.room).emit('getQuestion');
 io.to(params.room).emit('nextQuestion',sendPageNo('first'));
     io.to(params.room).emit('updateUserList', users.getUserList(params.room));
     socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
