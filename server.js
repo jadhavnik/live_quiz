@@ -67,7 +67,7 @@ io.to(params.room).emit('nextQuestion',sendPageNo('first'));
 
 socket.on('message', function(message, ackCallback) {
            console.log("server received message", message);
-           var result={};
+ var result={};
            var check;
            var question_to_send;
  var get_user_data={};
@@ -100,24 +100,43 @@ setTimeout(()=>{
 
          get_user_data = users.setAnswer(socket.id,1,"yes");
          console.log(get_user_data.answer);
- result.count_answer =users.getLiveCount(1);
-                            result.right_answer = "Your answr is right";
-                           console.log("server sending back result : ", result);
+
+
+          function x() {
+            var promise = new Promise(function(resolve, reject) {
+            setTimeout(function() {
+               var result={};
+                result.count_answer = users.getYesCount(1);
+                result.right_answer = "Your answr is right";
+                resolve(result);
+              },3000);
+            });
+            return promise;
+         }
+
+         x().then(function(result) {
+           ackCallback(result);
+            console.log("server sending back result : ", result);
+         });
+
+
+
 
                          }
                          else {
 
                            // var get_user_data = users.setAnswer(id,1,"no");
                  // result.count_ans =0;
+                 result.count_answer = users.getNoCount(1);
                             result.right_answer = "Your answer is wrong";
                            console.log("server sending back result : ", result);
-
+ackCallback(result);
                          }
                   }
 
-ackCallback(result);
 
-}, 2000);
+
+}, 6000);
 
  });
 

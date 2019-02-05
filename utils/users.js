@@ -64,9 +64,17 @@ fs.writeFileSync('notes-date.json',JSON.stringify(this.users));
 return user;
 }
 
-getLiveCount(question)
+getYesCount(question)
 {
   var users = this.users.filter((user) => (user.question === question && user.answer === "yes" ));
+  var namesArray = users.map((user) => user.name);
+
+  return namesArray.length;
+}
+
+getNoCount(question)
+{
+  var users = this.users.filter((user) => (user.question === question && user.answer === "no" ));
   var namesArray = users.map((user) => user.name);
 
   return namesArray.length;

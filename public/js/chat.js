@@ -39,6 +39,24 @@ socket.on('disconnect', function () {
 // countdown(data);
 // });
 
+var intervalId = window.setInterval(checkTime, 1000);
+
+function checkTime() {
+
+    var d = new Date();
+    var h = d.getHours();
+    var m = d.getMinutes();
+    var s = d.getSeconds();
+
+    if(h == 16 && m == 18 && s == 0)
+     {
+setTimeout(bar, 15000);
+setTimeout(countdown, 5000);
+       // return alert("hi");
+     }
+}
+
+
 
 var seconds = 10;
 // var data_a;
@@ -59,8 +77,6 @@ function countdown() {
       setTimeout(countdown, 1000);
     }
 }
-
-
 
 function bar() {
     return new Promise((resolve, reject) => {
