@@ -246,9 +246,14 @@ app.get('/index', (req, res) =>{
   res.render('admin_ques');
 });
 
-app.get('/quiz', (req, res) =>{
+app.get('/welcome', (req, res) =>{
+  res.render('welcome');
+});
 
-  var query={ quest_no: 1 };
+
+app.get('/quiz/:id', (req, res) =>{
+
+  var query={ quest_no: req.params.id };
 
   Question.find(query)
       .then (function(doc){
@@ -257,6 +262,9 @@ app.get('/quiz', (req, res) =>{
 
   // res.render('/');
 });
+
+
+
 
 app.post('/insert_ques', (req, res) =>{
 

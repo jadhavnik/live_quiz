@@ -1,0 +1,35 @@
+<h3>
+  CONTEST WILL START IN<span id="countdown">10</span> seconds
+</h3>
+
+<!-- <script src="/socket.io/socket.io.js"></script> -->
+<script type="text/javascript">
+
+    // Total seconds to wait
+    var seconds = 10;
+
+    function countdown() {
+        seconds = seconds - 1;
+        if (seconds < 0) {
+            // Chnage your redirection link here
+            window.location = "/quiz/1";
+        } else {
+            // Update remaining seconds
+            document.getElementById("countdown").innerHTML = seconds;
+            // Count down using javascript
+            window.setTimeout("countdown()", 1000);
+        }
+    }
+
+    // Run countdown function
+    countdown();
+var socket= io();
+socket.on('connect',()=>
+{
+  console.log('connected to server');
+});
+
+socket.on('disconnect',()=>{
+  console.log('disconnected from server');
+});
+</script>
