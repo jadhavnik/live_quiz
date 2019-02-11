@@ -1,7 +1,5 @@
 var socket = io();
 
-
-
 // function scrollToBottom () {
 //   // Selectors
 //   var messages = jQuery('#messages');
@@ -39,34 +37,101 @@ socket.on('disconnect', function () {
 // countdown(data);
 // });
 
-var intervalId = window.setInterval(checkTime, 1000);
+function after_27(){
 
-function checkTime() {
+  socket.emit('getQuestionNo',{
+     page:document.getElementsByClassName("next_page_no")[0].innerHTML,
+     question:document.getElementsByClassName("current_ques_no")[0].innerHTML
 
-    var d = new Date();
-    var h = d.getHours();
-    var m = d.getMinutes();
-    var s = d.getSeconds();
+  });
 
-    if(h == 11 && m == 13 && s == 0)
-     {
-setTimeout(bar, 15000);
-setTimeout(countdown, 5000);
-       // return alert("hi");
-     }
+  setTimeout(bar, 15000);
+  setTimeout(countdown, 5000);
+
 }
 
 
+$(function() {
+    var intervalID = setInterval(after_27,1000);
+    setTimeout(function() {
+        clearInterval(intervalID);
+    }, 2000);
+});
 
-var seconds = 10;
+$(function() {
+    var intervalID = setInterval(after_27,30000);
+    setTimeout(function() {
+        clearInterval(intervalID);
+    }, 90000);
+});
+
+
+
+socket.on('GetQuestionData',function (message){
+console.log(message.data[0].ques);
+  var template = jQuery('#message-template').html();
+  $("#first_content").remove();
+    var html = Mustache.render(template, {
+      quest_no: message.data[0].quest_no,
+      ques: message.data[0].ques,
+      opt_a: message.data[0].opt_a,
+      opt_b: message.data[0].opt_b,
+      opt_c: message.data[0].opt_c,
+      opt_d: message.data[0].opt_d,
+      next_page: message.data[0].next_page
+    });
+
+    jQuery('#messages').append(html);
+
+
+});
+
+// function check_questin_no()
+// {
+// var page=document.getElementsByClassName("next_page_no")[0].innerHTML;
+// if(page > 2)
+// {
+//   // var intervalId = window.setInterval(checkTime, 1000);
+// }else
+// {
+//   setTimeout(bar, 15000);
+//   setTimeout(countdown, 5000);
+// }
+//
+// }
+//
+//
+// check_questin_no();
+
+// function checkTime() {
+//
+//     var d = new Date();
+//     var h = d.getHours();
+//     var m = d.getMinutes();
+//     var s = d.getSeconds();
+//
+//     if(h == 12 && m == 00 && s == 0)
+//      {
+// setTimeout(bar, 15000);
+// setTimeout(countdown, 5000);
+//        // return alert("hi");
+//        // return true;
+//      }
+//      // return false;
+// }
+
+
+
+
 // var data_a;
+var seconds = 10;
 function countdown() {
-
   // console.log(data);
-
   // var data_a= data;
     seconds = seconds - 1;
     if (seconds < 0) {
+      seconds=10;
+      return;
       // window.location.href=data;
         // Chnage your redirection link here
            // window.location.href = "/" + data;
@@ -78,9 +143,18 @@ function countdown() {
     }
 }
 
-function bar() {
-    return new Promise((resolve, reject) => {
+// function countdown() {
+//
+//
+// for (i = 10; i >= 0 ; i--) {
+//        document.getElementById("countdown").innerHTML = i;
+// }
+//
+// }
 
+function bar() {
+
+    return new Promise((resolve, reject) => {
         var rate_value;
         if (document.getElementById('a').checked) {
           rate_value = document.getElementById('a').value;
@@ -97,8 +171,18 @@ function bar() {
 // console.log(rate_value);
   console.log("client sending message",rate_value);
         socket.emit('message', rate_value, function(response) {
-jQuery('#people_count').append(response.count_answer);
-          jQuery('#res').append(response.right_answer);
+
+          var template = jQuery('#answer-template').html();
+            var html = Mustache.render(template, {
+              people_count: response.count_answer,
+              res: response.right_answer,
+
+            });
+
+            jQuery('#answer').replaceWith(html);
+
+// jQuery('#people_count').replaceWith(response.count_answer);
+//           jQuery('#res').replaceWith(response.right_answer);
            console.log("client got ack response", response);
               setTimeout(() => resolve(response),11000);
             // resolve(response);
@@ -106,11 +190,19 @@ jQuery('#people_count').append(response.count_answer);
     });
 }
 
-bar().then(message => {
-   // you can use message here and only in here
-   console.log("response from bar(): ", message);
-});
 
+
+// bar().then(message => {
+//    // you can use message here and only in here
+//    console.log("response from bar(): ", message);
+// });
+
+// function final_redirect()
+// {
+//   var page=document.getElementsByClassName("next_page_no")[0].innerHTML;
+//  window.location.href =  page;
+// }
+//   setTimeout(final_redirect, 27000);
 
 
 socket.on('updateUserList', function (users) {

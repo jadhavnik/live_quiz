@@ -1,5 +1,17 @@
 var moment = require('moment');
 
+var sendQData = (doc)=>{
+  return
+  {
+//     "quest_no":doc.quest_no,
+//     "opt_a":doc.opt_a,
+// "opt_b":doc.opt_b,
+// "opt_c":doc.opt_c,
+// "opt_d"  :doc.opt_d,
+// "next_page":doc.next_page
+doc
+  }
+};
 var generateMessage = (from, text) => {
   return {
     from,
@@ -22,6 +34,7 @@ var sendPageNo = (page_no) => {
 
 module.exports = {
   generateMessage,
-  sendPageNo
+  sendPageNo,
+  sendQData
 
 };

@@ -35,7 +35,7 @@ const {Todo} = require('./models/todo');
 const {Users} = require('./utils/users');
 const {Question,Answer} = require('./models/question_answer');
 
-const {generateMessage,sendPageNo} = require('./utils/message');
+const {generateMessage,sendPageNo,sendQData} = require('./utils/message');
 const {isRealString,isMatchPassword} = require('./utils/validation');
 
 var users = new Users();
@@ -44,20 +44,18 @@ io.on('connection',(socket)=>{
 
 
 socket.on('join', (params, callback) => {
-    if (!isRealString(params.name) || !isRealString(params.room)) {
-      return callback('Name and password name are required.');
-    }
-if(!isMatchPassword(params.room))
-{
-  return callback('Please enter correct passowrd');
-}
+//     if (!isRealString(params.name) || !isRealString(params.room)) {
+//       return callback('Name and password name are required.');
+//     }
+// if(!isMatchPassword(params.room))
+// {
+//   return callback('Please enter correct passowrd');
+// }
     socket.join(params.room);
     users.removeUser(socket.id);
     users.addUser(socket.id, params.name, params.room);
-console.log(`${ params.name} connected`);
+    console.log(`${ params.name} connected`);
 
-// io.to(params.room).emit('getQuestion');
-io.to(params.room).emit('nextQuestion',sendPageNo('first'));
     io.to(params.room).emit('updateUserList', users.getUserList(params.room));
     socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
     socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
@@ -65,86 +63,88 @@ io.to(params.room).emit('nextQuestion',sendPageNo('first'));
     });
 
 
-socket.on('message', function(message, ackCallback) {
-           console.log("server received message", message);
- var result={};
-           var check;
-           var question_to_send;
- var get_user_data={};
-           question_to_send=1;
-          var query={ question: 1 };
-          Answer.find(query).then (function(doc){
 
-            console.log("answer :",doc[0].answer);
-            console.log("message :",message);
-            check = doc[0].answer === message ? true : false;
-            console.log(check);
-setTimeout(()=>{
-                  if(message != null){
+socket.on('message', function(message, ackCallback)
+{
+console.log("server received message", message);
+var result={};
+var check;
+var question_to_send;
+var get_user_data={};
+question_to_send=1;
 
-                    if(doc[0].answer == message)
-                         {
+var user_data =users.getUser(socket.id);
 
-                          Answer.updateOne({question: 1}, { $inc: { count_ans: 1 } }, {upsert: true}, function(err){
-                          console.log(err);
-                          });
-
-
-                          // Answer.findOneAndUpdate({question: 1}, {$inc: { count_ans: 1 }}, {new: true}, (err, man) => {
-                          //     if (err) {
-                          //         console.log("Something wrong when updating data!");
-                          //     }
-                          //     result.count_answer=man.count_ans;
-                          //     console.log(man.count_ans);
-                          // });
-
-         get_user_data = users.setAnswer(socket.id,1,"yes");
-         console.log(get_user_data.answer);
+    socket.on('getQuestionNo', (get_data) =>
+    {
+    // console.log("1:",get_data.page);
+    var query_for_q={ quest_no: get_data.page };
+    // if(get_data.question == 1)
+    // {
+    //   //do nothing
+    // }else {
+      Question.find(query_for_q)
+          .then(function(doc)
+          {
+          console.log("2:",doc);
+              io.to(user_data.room).emit('GetQuestionData',{data:doc});
+          });
+    // }
 
 
-          function x() {
-            var promise = new Promise(function(resolve, reject) {
-            setTimeout(function() {
-               var result={};
-                result.count_answer = users.getYesCount(1);
-                result.right_answer = "Your answr is right";
-                resolve(result);
-              },3000);
-            });
-            return promise;
-         }
+            var query_for_a={ question: get_data.question };
+                Answer.find(query_for_a).then (function(doc)
+                {
+                  // console.log("answer :",doc[0].answer);
+                  // console.log("message :",message);
+                  check = doc[0].answer === message ? true : false;
+                  console.log(check);
+                      setTimeout(()=>
+                      {
+                          if(message != null){
+                              if(doc[0].answer == message)
+                                {
+                                  // Answer.updateOne({question: 1}, { $inc: { count_ans: 1 } }, {upsert: true}, function(err){
+                                  // console.log(err);
+                                  // });
+                                  get_user_data = users.setAnswer(socket.id,1,"yes");
+                                  console.log(get_user_data.answer);
+                                    function x()
+                                    {
+                                      var promise = new Promise(function(resolve, reject)
+                                      {
+                                        setTimeout(function()
+                                          {
+                                            var result={};
+                                            result.count_answer = users.getYesCount(1);
+                                            result.right_answer = "Your answr is right";
+                                            resolve(result);
+                                          },3000);
+                                        });
+                                        return promise;
+                                      }
 
-         x().then(function(result) {
-           ackCallback(result);
-            console.log("server sending back result : ", result);
-         });
+                                      x().then(function(result)
+                                      {
+                                        ackCallback(result);
+                                        console.log("server sending back result : ", result);
+                                      });
+                                    }
+                                    else
+                                    {
+                                      // var get_user_data = users.setAnswer(id,1,"no");
+                                      // result.count_ans =0;
+                                        result.count_answer = users.getNoCount(1);
+                                        result.right_answer = "Your answer is wrong";
+                                        console.log("server sending back result : ", result);
+                                        ackCallback(result);
+                                      }
+                                    }
+                                  }, 6000);
+                                });
+                              });
+                            });
 
-
-
-
-                         }
-                         else {
-
-                           // var get_user_data = users.setAnswer(id,1,"no");
-                 // result.count_ans =0;
-                 result.count_answer = users.getNoCount(1);
-                            result.right_answer = "Your answer is wrong";
-                           console.log("server sending back result : ", result);
-ackCallback(result);
-                         }
-                  }
-
-
-
-}, 6000);
-
- });
-
-
-
-
-
-       });
 
 socket.on('disconnect',()=>{
   console.log('User was disconnected');
@@ -174,6 +174,73 @@ app.use(express.static(__dirname+'/public'));
 //   return text.toUpperCase();
 // });
 
+app.get('/quiz/:id/', (req, res) =>{
+
+  var query={ quest_no: req.params.id };
+
+  Question.find(query)
+      .then (function(doc){
+          res.render('quiz',{items:doc});
+        });
+
+  // res.render('/');
+});
+
+app.get('/index', (req, res) =>{
+  res.render('admin_ques');
+});
+
+app.get('/welcome', (req, res) =>{
+  res.render('welcome');
+});
+
+
+app.post('/insert_ques', (req, res) =>{
+
+  var question = new Question({
+    quest_no:req.body.quest_no,
+    ques: req.body.question,
+opt_a: req.body.option_a,
+opt_b: req.body.option_b,
+opt_c: req.body.option_c,
+opt_d: req.body.option_d,
+next_page:req.body.page_no
+  });
+
+  question.save();
+  res.redirect('index');
+});
+
+app.post('/insert_ans', (req, res) =>{
+
+  var answer = new Answer({
+    question: req.body.question,
+answer: req.body.answer
+  });
+
+  answer.save();
+  res.redirect('index');
+});
+
+
+app.use((req,res,next)=>{
+
+var now =new Date().toString();
+
+var log =`${now} : ${req.method} ${req.url}`;
+
+fs.appendFile('server.log',log + "\n",(err)=>{
+if(err){
+  console.log(err);
+}
+});
+
+next();
+});
+
+app.get('/home',(req,res) => {
+res.render('home');
+});
 
 app.get('/get_question_data', (req, res) => {
 
@@ -198,27 +265,6 @@ app.post('/todos', (req, res) => {
   });
 });
 
-
-app.use((req,res,next)=>{
-
-var now =new Date().toString();
-
-var log =`${now} : ${req.method} ${req.url}`;
-
-fs.appendFile('server.log',log + "\n",(err)=>{
-if(err){
-  console.log(err);
-}
-});
-
-next();
-});
-
-app.get('/home',(req,res) => {
-res.render('home');
-});
-
-
 // app.get('/bad',(req,res)=>{
 //
 //   res.send({
@@ -241,59 +287,6 @@ res.render('home');
 //
 // });
 // });
-
-app.get('/index', (req, res) =>{
-  res.render('admin_ques');
-});
-
-app.get('/welcome', (req, res) =>{
-  res.render('welcome');
-});
-
-
-app.get('/quiz/:id', (req, res) =>{
-
-  var query={ quest_no: req.params.id };
-
-  Question.find(query)
-      .then (function(doc){
-          res.render('quiz',{items:doc});
-        });
-
-  // res.render('/');
-});
-
-
-
-
-app.post('/insert_ques', (req, res) =>{
-
-  var question = new Question({
-    quest_no:req.body.quest_no,
-    ques: req.body.question,
-opt_a: req.body.option_a,
-opt_b: req.body.option_b,
-opt_c: req.body.option_c,
-opt_d: req.body.option_d
-  });
-
-  question.save();
-  res.redirect('index');
-});
-
-app.post('/insert_ans', (req, res) =>{
-
-  var answer = new Answer({
-    question: req.body.question,
-answer: req.body.answer
-  });
-
-  answer.save();
-  res.redirect('index');
-});
-
-
-
 
 app.get('/first',(req, res)=>{
 

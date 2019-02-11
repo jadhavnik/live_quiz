@@ -24,6 +24,10 @@ var Question = mongoose.model('Question', {
   opt_d: {
     type: String,
       required: true,
+  },
+  next_page:{
+    type: String,
+    required: true
   }
 });
 

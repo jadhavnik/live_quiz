@@ -8,24 +8,44 @@
   </div>
 
    <div class="chat__main">
+     <div id="messages">
     <!-- <ol id="messages" class="chat__messages"></ol> -->
-<p>
+<div id="first_content">
   {{# each items }}
 
-    <div>{{ this.quest_no }}.{{ this.ques }} <br>
+  <span class="current_ques_no">{{ this.quest_no }}</span>.{{ this.ques }} <br>
     <input type="radio" name="options" id="a" value="a"> {{ this.opt_a }}<br>
       <input type="radio" name="options" id="b" value="b">{{ this.opt_b }}<br>
       <input type="radio" name="options" id="c" value="c">{{ this.opt_c }}<br>
 <input type="radio" name="options" id="d" value="d">{{ this.opt_d }}<br>
-</div>
+
+<div class="next_page_no" style="display:none;">{{ this.next_page}}</div>
   {{/each}}
 <!-- <button id="send-location" onclick="bar()">Send location</button> -->
-</p>
-Redirecting to duckdev.com after <span id="countdown">10</span> seconds
-<div id="res"></div>
-<div id="people_count"></div>
-
 </div>
+</div>
+<div id="answer">
+</div>
+Redirecting to duckdev.com after <span id="countdown">10</span> seconds
+
+
+<script id="message-template" type="text/template">
+  <div id="first_content">
+    <span class="current_ques_no"> \{{ quest_no }}</span>. \{{ ques }} <br>
+  <input type="radio" name="options" id="a" value="a"> \{{ opt_a }}<br>
+    <input type="radio" name="options" id="b" value="b">\{{ opt_b }}<br>
+    <input type="radio" name="options" id="c" value="c"> \{{ opt_c }}<br>
+<input type="radio" name="options" id="d" value="d"> \{{ opt_d }}<br>
+</div>
+<div class="next_page_no" style="display:none;"> \{{ next_page}}</div>
+  </script>
+
+  <script id="answer-template" type="text/template">
+    <div id="res">\{{ res }}</div>
+    <div id="people_count">\{{ people_count }}</div>
+    </script>
+
+
     <!-- <div class="chat__footer">
       <form id="message-form">
         <input name="message" type="text" placeholder="Message" autofocus autocomplete="off"/>
@@ -33,19 +53,6 @@ Redirecting to duckdev.com after <span id="countdown">10</span> seconds
       </form>
       <button id="send-location">Send location</button>
     </div>-->
-
-
-  <!-- <script id="message-template" type="text/template">
-    <li class="message">
-      <div class="message__title">
-        <h4>{{from}}</h4>
-        <span>{{createdAt}}</span>
-      </div>
-      <div class="message__body">
-        <p>{{text}}</p>
-      </div>
-    </li>
-  </script> -->
 
   <!-- <script id="location-message-template" type="text/template">
     <li class="message">
